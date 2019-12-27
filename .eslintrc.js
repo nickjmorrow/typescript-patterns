@@ -11,6 +11,6 @@ module.exports = {
 	},
 	rules: {
 		'@typescript-eslint/no-unused-vars': 1,
-		'@typescript-eslint/prefer-interface': false,
+		'@typescript-eslint/prefer-interface': 0,
 	},
 };
