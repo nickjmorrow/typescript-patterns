@@ -11,7 +11,7 @@ const whoAmI = {
 whoAmI.regularFunction(); // "Leslie Knope"
 whoAmI.arrowFunction(); // undefined
 
-class Birdfeeder {
+class SomeClass {
 	constructor() {
 		this.firstArg = 'firstArg';
 		this.firstFunc = this.firstFunc.bind(this);
@@ -45,7 +45,7 @@ class Birdfeeder {
 	};
 }
 
-const { firstFunc, secondFunc, thirdFunc, fourthFunc } = new Birdfeeder();
+const { firstFunc, secondFunc, thirdFunc, fourthFunc } = new SomeClass();
 console.log(firstFunc()());
 console.log(secondFunc()());
 console.log(thirdFunc()());

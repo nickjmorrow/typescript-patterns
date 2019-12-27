@@ -1,8 +1,3 @@
-# Typescript Playground
+# TypeScript Sandbox
 
--   generators
--   decorators
--   promises, callbacks, async/await
--   class vs prototypical inheritance
--   dependency injection
--   this, bind, call, apply
+Sandbox repo for playing with TypeScript and JavaScript code.
