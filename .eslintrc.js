@@ -12,5 +12,6 @@ module.exports = {
 	rules: {
 		'@typescript-eslint/no-unused-vars': 1,
 		'@typescript-eslint/prefer-interface': 0,
+		'@typescript-eslint/explicit-function-return-type': 0,
 	},
 };
