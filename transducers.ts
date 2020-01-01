@@ -99,18 +99,30 @@ const makeMapTransducer = <T, U, V>(func: Func<T, U>) => (nextReducer: Reducer<V
 	item: T,
 ) => nextReducer(accumulator, func(item));
 
-const foundFilterTransducer = makeFilterTransducer<Item, number>(isFound);
+const foundFilterTransducer = makeFilterTransducer<Item, TotalCountAccumulator>(isFound);
 
-const scoreMappingTransducer = makeMapTransducer<Item, number, number>(getPopularity);
+interface TotalCountAccumulator {
+	total: number;
+	count: number;
+}
 
-// const otherAddScores: Reducer<number, number> = (accumulator: number, current: number) => current + accumulator;
+const scoreMappingTransducer = makeMapTransducer<Item, number, TotalCountAccumulator>(getPopularity);
 
-// const allInOneReducer = foundFilterTransducer(scoreMappingTransducer(otherAddScores));
-
-// const output = victorianSlang.reduce(allInOneReducer, 0);
-
-const rootReducer: Reducer<number, number> = (accumulator: number, current: number) => accumulator + current;
+/**
+ *
+ * @param accumulator Number that gets added onto at each iteration.
+ * @param current Curernnt number.
+ */
+const rootReducer: Reducer<TotalCountAccumulator, number> = (accumulator: TotalCountAccumulator, current: number) => ({
+	total: accumulator.total + current,
+	count: accumulator.count + 1,
+});
 
 const finalReducer = foundFilterTransducer(scoreMappingTransducer(rootReducer));
 
-console.log(victorianSlang.reduce(finalReducer, 0));
+const initialAccumulator: TotalCountAccumulator = {
+	total: 0,
+	count: 0,
+};
+
+console.log(victorianSlang.reduce(finalReducer, initialAccumulator));
