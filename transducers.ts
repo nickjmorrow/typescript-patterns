@@ -39,43 +39,49 @@ const victorianSlang = [
 	},
 ];
 
-// const filter = <T>(arr: T[], predicate: (value: T) => boolean) =>
-// 	arr.reduce(
-// 		(accumulator: T[], currentValue: T) => (predicate(currentValue) ? [currentValue, ...accumulator] : accumulator),
-// 		[],
-// 	);
-
-// const map = <T, U>(arr: T[], func: (value: T) => U) =>
-// 	arr.reduce((accumulator: U[], currentValue: T) => [...accumulator, func(currentValue)], []);
-
 const isFound: Predicate<Item> = (item: Item) => item.found;
 
 const getPopularity: Func<Item, number> = (item: Item) => item.popularity;
 
+/**
+ * Transforms a T into a U.
+ */
 type Func<T, U> = (value: T) => U;
 
 type Predicate<T> = Func<T, boolean>;
 
-type Reducer<T, U> = (accumulator: T, current: U) => T;
+type Reducer<Accumulator, CurrentItem> = (accumulator: Accumulator, current: CurrentItem) => Accumulator;
 
 type FilterReducer<T> = Reducer<T[], T>;
 
 type MapReducer<T, U> = Reducer<U[], T>;
 
-const addScores: Reducer<{ totalPopularity: number; itemCount: number }, number> = (
-	accumulator: { totalPopularity: number; itemCount: number },
-	current: number,
-) => ({
-	totalPopularity: accumulator.totalPopularity + current,
-	itemCount: accumulator.itemCount + 1,
+const initialInfo = { totalPopularity: 0, itemCount: 0 };
+
+/**
+ *
+ * @param accumulator Number that gets added onto at each iteration.
+ * @param current Curernnt number.
+ */
+const addScores: Reducer<TotalCountAccumulator, number> = (accumulator: TotalCountAccumulator, current: number) => ({
+	total: accumulator.total + current,
+	count: accumulator.count + 1,
 });
 
-const initialInfo = { totalPopularity: 0, itemCount: 0 };
+interface TotalCountAccumulator {
+	total: number;
+	count: number;
+}
+
+const initialAccumulator: TotalCountAccumulator = {
+	total: 0,
+	count: 0,
+};
 
 const popularityInfo = victorianSlang
 	.filter(isFound)
 	.map(getPopularity)
-	.reduce(addScores, initialInfo);
+	.reduce(addScores, initialAccumulator);
 
 const makeFilterReducer = <T>(predicate: Predicate<T>): FilterReducer<T> => (accumulator: T[], item: T): T[] =>
 	predicate(item) ? accumulator.concat([item]) : accumulator;
@@ -83,46 +89,35 @@ const makeFilterReducer = <T>(predicate: Predicate<T>): FilterReducer<T> => (acc
 const makeMapReducer = <T, U>(func: (val: T) => U): MapReducer<T, U> => (accumulator: U[], item: T): U[] =>
 	accumulator.concat([func(item)]);
 
-const filterFoundReducer = makeFilterReducer(isFound);
+const filterFoundReducer: Reducer<Item[], Item> = makeFilterReducer(isFound);
 
-const mapPopularityReducer = makeMapReducer(getPopularity);
+const mapPopularityReducer: Reducer<number[], Item> = makeMapReducer(getPopularity);
 
-type Transducer<T, U, V> = (reducer: Reducer<T, U>) => Reducer<V, T>;
+type Transducer<Accumulator, TransformedItem, OriginalItem> = (
+	nextReducer: Reducer<Accumulator, OriginalItem>,
+) => Reducer<Accumulator, TransformedItem>;
 
-const makeFilterTransducer = <T, U>(predicate: Predicate<T>) => (nextReducer: Reducer<U, T>): Reducer<U, T> => (
-	accumulator: U,
-	item: T,
-) => (predicate(item) ? nextReducer(accumulator, item) : accumulator);
+const makeFilterTransducer = <Accumulator, SomeItem>(
+	predicate: Predicate<SomeItem>,
+): Transducer<Accumulator, SomeItem, SomeItem> => (
+	nextReducer: Reducer<Accumulator, SomeItem>,
+): Reducer<Accumulator, SomeItem> => (accumulator: Accumulator, item: SomeItem): Accumulator =>
+	predicate(item) ? nextReducer(accumulator, item) : accumulator;
 
-const makeMapTransducer = <T, U, V>(func: Func<T, U>) => (nextReducer: Reducer<V, U>): Reducer<V, T> => (
-	accumulator: V,
-	item: T,
-) => nextReducer(accumulator, func(item));
+const makeMapTransducer = <Accumulator, OriginalItem, TransformedItem>(
+	func: Func<OriginalItem, TransformedItem>,
+): Transducer<Accumulator, OriginalItem, TransformedItem> => (
+	nextReducer: Reducer<Accumulator, TransformedItem>,
+): Reducer<Accumulator, OriginalItem> => (accumulator: Accumulator, item: OriginalItem): Accumulator =>
+	nextReducer(accumulator, func(item));
 
-const foundFilterTransducer = makeFilterTransducer<Item, TotalCountAccumulator>(isFound);
+const foundFilterTransducer: Transducer<TotalCountAccumulator, Item, Item> = makeFilterTransducer<
+	TotalCountAccumulator,
+	Item
+>(isFound);
 
-interface TotalCountAccumulator {
-	total: number;
-	count: number;
-}
+const scoreMappingTransducer = makeMapTransducer<TotalCountAccumulator, Item, number>(getPopularity);
 
-const scoreMappingTransducer = makeMapTransducer<Item, number, TotalCountAccumulator>(getPopularity);
-
-/**
- *
- * @param accumulator Number that gets added onto at each iteration.
- * @param current Curernnt number.
- */
-const rootReducer: Reducer<TotalCountAccumulator, number> = (accumulator: TotalCountAccumulator, current: number) => ({
-	total: accumulator.total + current,
-	count: accumulator.count + 1,
-});
-
-const finalReducer = foundFilterTransducer(scoreMappingTransducer(rootReducer));
-
-const initialAccumulator: TotalCountAccumulator = {
-	total: 0,
-	count: 0,
-};
+const finalReducer = foundFilterTransducer(scoreMappingTransducer(addScores));
 
 console.log(victorianSlang.reduce(finalReducer, initialAccumulator));
