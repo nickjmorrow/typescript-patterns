@@ -8,12 +8,12 @@
 		"test:watch": "jest --watch",
 		"build": "rm -rf dist && tsc && node dist/index.js",
 		"start": "ts-node index.ts",
-		"format": "prettier --write \"src/**/*.{js,ts,tsx}\"",
+		"format": "prettier --write \"*/**/*.{js,ts,tsx}\"",
 		"lint": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix"
 	},
 	"husky": {
 		"hooks": {
-			"pre-push": "nnpm run lint"
+			"pre-push": "npm run format && npm run lint"
 		}
 	},
 	"keywords": [],

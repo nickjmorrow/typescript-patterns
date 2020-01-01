@@ -3,10 +3,14 @@ import { log } from './log';
 import { logWithName } from './logWithname';
 
 class Example {
-	a() {}
+	a() {
+		return;
+	}
 
 	@readonly
-	b() {}
+	b() {
+		return;
+	}
 
 	@log
 	c(x: number, b: number) {

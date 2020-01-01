@@ -1,4 +1,4 @@
-export type Nugget {
+export interface Nugget {
 	weight: number;
-	tastiness: 'good' | 'bad'
+	tastiness: 'good' | 'bad';
 }
