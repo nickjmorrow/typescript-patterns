@@ -1,6 +1,6 @@
 import { readonly } from './readonly';
 import { log } from './log';
-import { logWithName } from './logWithname';
+import { logWithName } from './logWithName';
 
 class Example {
 	a() {

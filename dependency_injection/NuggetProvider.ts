@@ -6,3 +6,5 @@ export class NuggetProvider {
 		return [1, 2, 3].map(n => ({ weight: n, tastiness: 'good' as const }));
 	};
 }
+
+console.log('');
