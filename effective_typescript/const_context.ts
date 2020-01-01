@@ -1,5 +1,5 @@
-const x = 'hello' as const;
+const helloConst = 'hello' as const;
 
-const y = { element: 'air' } as const;
+const airConst = { element: 'air' } as const;
 
 const coordinates = [10, 20] as const;

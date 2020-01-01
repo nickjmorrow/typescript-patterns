@@ -1,5 +1,5 @@
 class Maybe<T> {
-	private value: T;
+	private value: T | null;
 
 	constructor(value: T | null) {
 		this.value = value;
@@ -14,7 +14,7 @@ class Maybe<T> {
 	}
 }
 
-const x = new Maybe(5);
+const maybe5 = new Maybe(5);
 
 interface User {
 	id: number;
@@ -24,8 +24,8 @@ interface User {
 const getUser = (): Maybe<User> => {
 	const user = {
 		id: 1,
-		name: "Mike"
+		name: 'Mike',
 	};
 
 	return new Maybe(user);
-}
+};

@@ -13,7 +13,7 @@
 	},
 	"husky": {
 		"hooks": {
-			"pre-push": "npm run format && npm run lint"
+			"pre-push": "npm run build && npm run lint && npm run format"
 		}
 	},
 	"keywords": [],
