@@ -28,21 +28,18 @@ export const levelOrderTraversalIterative = (root: TreeNode) => {
 			queue.unshift(new WrapperNode(currentNode.treeNode.right, currentNode.level + 1));
 		}
 	}
-	const output = wrapperNodes.reduce(
-		(agg, cur) => {
-			const {
-				level,
-				treeNode: { value },
-			} = cur;
-			if (agg[level] === undefined) {
-				agg[level] = [value];
-			} else {
-				agg[level].push(value);
-			}
-			return agg;
-		},
-		[] as (string | number)[][],
-	);
+	const output = wrapperNodes.reduce((agg, cur) => {
+		const {
+			level,
+			treeNode: { value },
+		} = cur;
+		if (agg[level] === undefined) {
+			agg[level] = [value];
+		} else {
+			agg[level].push(value);
+		}
+		return agg;
+	}, [] as (string | number)[][]);
 	return output;
 };
 

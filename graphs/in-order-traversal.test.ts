@@ -8,11 +8,9 @@ const expectedTraversalValues = [4, 2, 5, 1, 6, 3, 7];
 const nodeFunc = (treeNode: TreeNode) => values.push(treeNode.value);
 
 describe('in order traversal', (): void => {
-	beforeEach(
-		(): void => {
-			values = [];
-		},
-	);
+	beforeEach((): void => {
+		values = [];
+	});
 
 	it('recursive', (): void => {
 		inOrderTraversalRecursive(oneNode, nodeFunc);

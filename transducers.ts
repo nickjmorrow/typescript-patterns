@@ -43,9 +43,6 @@ const isFound: Predicate<Item> = (item: Item) => item.found;
 
 const getPopularity: Func<Item, number> = (item: Item) => item.popularity;
 
-/**
- * Transforms a T into a U.
- */
 type Func<T, U> = (value: T) => U;
 
 type Predicate<T> = Func<T, boolean>;
@@ -61,7 +58,7 @@ const initialInfo = { totalPopularity: 0, itemCount: 0 };
 /**
  *
  * @param accumulator Number that gets added onto at each iteration.
- * @param current Curernnt number.
+ * @param current Current number.
  */
 const addScores: Reducer<TotalCountAccumulator, number> = (accumulator: TotalCountAccumulator, current: number) => ({
 	total: accumulator.total + current,
@@ -94,8 +91,8 @@ const filterFoundReducer: Reducer<Item[], Item> = makeFilterReducer(isFound);
 const mapPopularityReducer: Reducer<number[], Item> = makeMapReducer(getPopularity);
 
 type Transducer<Accumulator, TransformedItem, OriginalItem> = (
-	nextReducer: Reducer<Accumulator, OriginalItem>,
-) => Reducer<Accumulator, TransformedItem>;
+	nextReducer: Reducer<Accumulator, TransformedItem>,
+) => Reducer<Accumulator, OriginalItem>;
 
 const makeFilterTransducer = <Accumulator, SomeItem>(
 	predicate: Predicate<SomeItem>,
@@ -106,7 +103,7 @@ const makeFilterTransducer = <Accumulator, SomeItem>(
 
 const makeMapTransducer = <Accumulator, OriginalItem, TransformedItem>(
 	func: Func<OriginalItem, TransformedItem>,
-): Transducer<Accumulator, OriginalItem, TransformedItem> => (
+): Transducer<Accumulator, TransformedItem, OriginalItem> => (
 	nextReducer: Reducer<Accumulator, TransformedItem>,
 ): Reducer<Accumulator, OriginalItem> => (accumulator: Accumulator, item: OriginalItem): Accumulator =>
 	nextReducer(accumulator, func(item));
@@ -116,6 +113,12 @@ const foundFilterTransducer: Transducer<TotalCountAccumulator, Item, Item> = mak
 	Item
 >(isFound);
 
+/**
+ * I support functions that reduce over numbers, but I know SOME other functions
+ * need to reduce over Items. I'll take in a function that reduces over numbers
+ * and output a function that reduces over Items, because I know there's
+ * other functions that prefer to reduce over Items.
+ */
 const scoreMappingTransducer = makeMapTransducer<TotalCountAccumulator, Item, number>(getPopularity);
 
 const finalReducer = foundFilterTransducer(scoreMappingTransducer(addScores));

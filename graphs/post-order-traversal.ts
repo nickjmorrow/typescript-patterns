@@ -13,7 +13,7 @@ export const postOrderTraversalRecursive = (rootNode: TreeNode, nodeFunc: NodeFu
 };
 
 export const postOrderTraversalIterative = (rootNode: TreeNode, nodeFunc: NodeFunc) => {
-	let nodeStack: TreeNode[] = [];
+	const nodeStack: TreeNode[] = [];
 	if (rootNode == null) {
 		return;
 	}
@@ -28,7 +28,7 @@ export const postOrderTraversalIterative = (rootNode: TreeNode, nodeFunc: NodeFu
 			if (nodeStack.length === 0) {
 				break;
 			}
-			let topOfStack = nodeStack[nodeStack.length - 1];
+			const topOfStack = nodeStack[nodeStack.length - 1];
 
 			if (topOfStack.right) {
 				currentNode = topOfStack.right;

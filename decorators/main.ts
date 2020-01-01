@@ -21,7 +21,9 @@ class Example {
 
 const e = new Example();
 
-e.a = () => {};
+e.a = () => {
+	return;
+};
 // e.b = () => {};
 e.c(55, 44);
 

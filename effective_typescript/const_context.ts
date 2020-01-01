@@ -1,4 +1,4 @@
-let x = 'hello' as const;
+const x = 'hello' as const;
 
 const y = { element: 'air' } as const;
 

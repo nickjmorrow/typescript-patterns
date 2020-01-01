@@ -25,11 +25,9 @@ export class Trie {
 	}
 
 	public addWordsToTrie(words: string[]): void {
-		words.forEach(
-			(word): void => {
-				this.addToTrieHelper(word, this.rootNode);
-			},
-		);
+		words.forEach((word): void => {
+			this.addToTrieHelper(word, this.rootNode);
+		});
 	}
 
 	private addToTrieHelper(word: string, currentNode: TrieNode): void {
@@ -67,19 +65,17 @@ export class Trie {
 		const eligibleWords: string[] = [];
 
 		while (placesToSearch.length > 0) {
-			let { node, remainingLetters } = placesToSearch.pop()!;
+			const { node, remainingLetters } = placesToSearch.pop()!;
 			if (node.isEndOfWord) {
 				eligibleWords.push(startingLetters + remainingLetters + node.value);
 			}
 			const { children } = node;
-			children.forEach(
-				(child): void => {
-					placesToSearch.push({
-						node: child,
-						remainingLetters: remainingLetters + node.value,
-					});
-				},
-			);
+			children.forEach((child): void => {
+				placesToSearch.push({
+					node: child,
+					remainingLetters: remainingLetters + node.value,
+				});
+			});
 		}
 
 		return eligibleWords;

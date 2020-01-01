@@ -13,7 +13,7 @@ export const preOrderTraversalRecursive = (rootNode: TreeNode, nodeFunc: NodeFun
 };
 
 export const preOrderTraversalIterative = (rootNode: TreeNode, nodeFunc: NodeFunc) => {
-	let nodeStack: TreeNode[] = [];
+	const nodeStack: TreeNode[] = [];
 	if (rootNode == null) {
 		return;
 	}
